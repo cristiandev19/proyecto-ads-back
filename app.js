@@ -1,9 +1,9 @@
-const express    = require('express'),
-      app        = express(),
-      cors       = require('cors'),
-      bodyParser = require('body-parser'),
+const express          = require('express'),
+      app              = express(),
+      cors             = require('cors'),
+      bodyParser       = require('body-parser'),
       { dbConnection } = require('./src/databases/mongodb'),
-      { config } = require('./src/config/index');
+      { config }       = require('./src/config/index');
 
 //passport stuff
 const passport      = require('passport'),
