@@ -1,6 +1,7 @@
 const auth_utils = require('./auth_utils');
 
-exports.loginEmail = (req, res) => {
+
+exports.loginEmail = (req, res, next) => {
   try {
     const { email, password } = req.body;
     const result = auth_utils.signToken({ email, isLoged: true });
@@ -15,7 +16,7 @@ exports.loginEmail = (req, res) => {
 }
 
 
-exports.verifyLogin = (req, res) => {
+exports.verifyLogin = (req, res, next) => {
   try {
     const result = auth_utils.verifyToken(req.query.token);
     if(result.error) {
