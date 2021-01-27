@@ -29,7 +29,14 @@ const r_auth = require('./src/modules/auth/r_auth');
 app
   .use('/example', r_example)
   .use('/auth', r_auth);
-  
+
+const c_admin = require('./src/controllers/c_admin');
+// Rutas hardcoded
+app.post('/insert-rol', c_admin.insertRol)
+app.get('/roles', c_admin.getRoles)
+
+
+
 // Middleware para manejo de errores
 app
   .use(logErrors)
