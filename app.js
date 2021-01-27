@@ -11,7 +11,7 @@ const passport      = require('passport'),
 passport.use(jwtStrategry);
 
 // Hacemos la conexion a mongodb
-dbConnection();
+// dbConnection(); -- es para mongodb
 
 // Importamos los middlewares para manejar los errores
 const { logErrors, errorHandler } = require('./src/utils/middleware/errorHandler');
