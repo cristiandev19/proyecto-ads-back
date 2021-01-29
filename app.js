@@ -31,9 +31,16 @@ app
   .use('/auth', r_auth);
 
 const c_admin = require('./src/controllers/c_admin');
+const c_auth = require('./src/controllers/c_auth');
 // Rutas hardcoded
 app.post('/insert-rol', c_admin.insertRol)
 app.get('/roles', c_admin.getRoles)
+app.post('/insert-product', c_admin.insertProducto)
+app.get('/productos', c_admin.getProductos)
+app.get('/boletas', c_admin.getBoletas)
+app.get('/login', c_auth.login)
+app.get('/register', c_auth.registerUser)
+
 
 
 
