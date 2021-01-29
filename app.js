@@ -35,13 +35,15 @@ const c_auth = require('./src/controllers/c_auth');
 // Rutas hardcoded
 app.post('/insert-rol', c_admin.insertRol)
 app.get('/roles', c_admin.getRoles)
+app.get('/acciones', c_admin.getAcciones)
 app.post('/insert-product', c_admin.insertProducto)
 app.get('/productos', c_admin.getProductos)
 app.get('/boletas', c_admin.getBoletas)
 app.get('/login', c_auth.login)
-app.get('/register', c_auth.registerUser)
-
-
+app.post('/register', c_auth.registerUser)
+app.post('/insert-accion', c_admin.insertAccion)
+app.post('/asignar-accion', c_admin.asignarAccionxRol)
+app.get('/get-usuario', c_admin.getUsuario)
 
 
 // Middleware para manejo de errores
