@@ -31,6 +31,45 @@ exports.getRoles = async (req, res, next) => {
   }
 }
 
+exports.insertProducto = async (req, res, next) => {
+  try {
+    const { precio, stock, desc_producto } = req.body;
+    const result = await m_admin.insertProducto(precio, stock, desc_producto);
+    console.log('result', result)
+    return res.status(200).send({
+      message: MESSAGE_API.INSERT_SUCCESS,
+      product: {
+        ...result
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 
+exports.getProductos = async (req, res, next) => {
+  try {
+    const result = await m_admin.getProductos();
+    console.log('result', result)
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      productos: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
+exports.getBoletas = async (req, res, next) => {
+  try {
+    const result = await m_admin.getBoletas();
+    console.log('result', result)
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      boletas: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
