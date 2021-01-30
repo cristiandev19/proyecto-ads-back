@@ -37,6 +37,8 @@ app.post('/insert-rol', c_admin.insertRol)
 app.get('/roles', c_admin.getRoles)
 app.get('/acciones', c_admin.getAcciones)
 app.post('/insert-product', c_admin.insertProducto)
+app.post('/update-product', c_admin.updateProducto)
+app.post('/delete-product', c_admin.deleteProducto)
 app.get('/productos', c_admin.getProductos)
 app.get('/boletas', c_admin.getBoletas)
 app.get('/login', c_auth.login)
@@ -44,6 +46,9 @@ app.post('/register', c_auth.registerUser)
 app.post('/insert-accion', c_admin.insertAccion)
 app.post('/asignar-accion', c_admin.asignarAccionxRol)
 app.get('/get-usuario', c_admin.getUsuario)
+app.get('/usuarios', c_admin.getUsuarios)
+app.post('/create-usuario', c_admin.createUsuario)
+app.post('/update-usuario', c_admin.updateUsuario)
 
 
 // Middleware para manejo de errores
