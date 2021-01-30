@@ -61,6 +61,39 @@ exports.insertProducto = async (req, res, next) => {
   }
 }
 
+exports.updateProducto = async (req, res, next) => {
+  try {
+    const { id_producto, desc_producto, stock, precio } = req.body;
+    const result = await m_admin.updateProducto({ id_producto, desc_producto, stock, precio });
+    console.log('result', result)
+    return res.status(200).send({
+      message: MESSAGE_API.INSERT_SUCCESS,
+      product: {
+        ...result
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.deleteProducto = async (req, res, next) => {
+  try {
+    const { id_producto } = req.body;
+    const result = await m_admin.deleteProducto(id_producto);
+    console.log('result', result)
+    return res.status(200).send({
+      message: MESSAGE_API.REMOVE_SUCCESS,
+      product: {
+        ...result
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 
 exports.getProductos = async (req, res, next) => {
   try {
@@ -144,6 +177,55 @@ exports.getUsuario = async (req, res, next) => {
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       usuario: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.getUsuarios = async (req, res, next) => {
+  try {
+    const result = await m_admin.getUsuarios();
+    console.log('result', result)
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      usuarios: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.createUsuario = async (req, res, next) => {
+  try {
+    const default_rol = 8;
+    const { nombres, email, password } = req.body;
+    const usuario = await m_admin.createUsuario({
+      nombres, email, password,
+      _id_rol: default_rol
+    });
+    console.log('result', usuario)
+    return res.status(200).send({
+      message: MESSAGE_API.INSERT_SUCCESS,
+      usuario: usuario
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.updateUsuario = async (req, res, next) => {
+  try {
+    const { id_usuario, nombres, email, password } = req.body;
+    const usuario = await m_admin.updateUsuario({
+      id_usuario, nombres, email, password
+    });
+    console.log('result', usuario)
+    return res.status(200).send({
+      message: MESSAGE_API.UPDATE_SUCCESS,
+      usuario: usuario
     });
   } catch (error) {
     next(error);
