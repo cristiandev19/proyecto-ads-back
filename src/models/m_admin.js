@@ -188,6 +188,26 @@ exports.updateAccionxRol = ({_id_accion, _id_rol}) => {
 }
 
 
+exports.getAccionesXRol = (id_rol) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT *
+         FROM accion_x_rol ar
+              LEFT JOIN accion a ON (a.id_accion = ar._id_accion)
+        WHERE ar._id_rol = $1
+          AND ar.active = TRUE;`,
+      [id_rol]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
 exports.validarAccionxRol = ({_id_accion, _id_rol}) => {
   return new Promise((resolve, reject) => {
     pgInstance.any(
@@ -247,10 +267,6 @@ exports.updateUsuario = ({id_usuario, nombres, email, password}) => {
 }
 
 
-
-
-
-
 exports.insertProducto = (precio, stock, desc_producto) => {
   return new Promise((resolve, reject) => {
     pgInstance.one(
@@ -298,6 +314,73 @@ exports.deleteProducto = (id_producto) => {
       [id_producto]
     )
       .then(data => {
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.emitirNotaVenta = (nota_ventas, total) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.one(
+      `SELECT * FROM crear_nota_venta($1, $2) res;`,
+      [nota_ventas, total]
+    )
+      .then(data => {
+        return resolve(data.res);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.buscarNotaVenta = (nota_venta) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT *
+         FROM nota_venta nv
+              LEFT JOIN producto_x_nota_venta pxv ON (pxv._id_nota_venta = nv.id_nota_venta)
+              LEFT JOIN producto p ON (p.id_producto = pxv._id_producto)
+        WHERE nv.codigo_nota = $1 ;`,
+      [nota_venta]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.emitirBoleta = (nota_venta, medio_pago) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.one(
+      `SELECT * FROM crear_boleta($1, $2) res;`,
+      [nota_venta, medio_pago]
+    )
+      .then(data => {
+        return resolve(data.res);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.getBoletas = () => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT to_char(fecha, 'DD-MM-YYYY') as fecha_f,*
+         FROM boleta;`,
+      []
+    )
+      .then(data => {
+        console.log('data', data)
         return resolve(data);
       })
       .catch(error => {
