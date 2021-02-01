@@ -54,7 +54,7 @@ exports.getAcciones = () => {
 exports.getProductos = () => {
   return new Promise((resolve, reject) => {
     pgInstance.any(
-      'SELECT * FROM producto WHERE estado = TRUE;',
+      'SELECT * FROM producto WHERE estado = TRUE AND stock > 0;',
       []
     )
       .then(data => {
