@@ -54,8 +54,13 @@ app.post('/emitir-notaventa', c_admin.emitirNotaVenta)
 app.get('/buscar-notaventa', c_admin.buscarNotaVenta)
 app.post('/emitir-boleta', c_admin.emitirBoleta)
 app.get('/boletas', c_admin.getBoletas)
-
-
+app.get('/detalle-boleta', c_admin.detalleBoleta)
+app.post('/update-boleta', c_admin.updateBoleta)
+// app.post('/send-correo', c_admin.sendCorreo)
+app.get('/validar-email', c_admin.validarEmail)
+app.post('/update-pass', c_admin.updatePass)
+app.get('/search-usuario', c_admin.searchUsuario)
+app.post('/update-rol', c_admin.updateRol)
 
 // Middleware para manejo de errores
 app
