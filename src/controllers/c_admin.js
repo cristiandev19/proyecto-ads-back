@@ -169,6 +169,21 @@ exports.asignarAccionxRol = async (req, res, next) => {
   }
 }
 
+
+exports.getAccionesXRol = async (req, res, next) => {
+  try {
+    const { id_rol } = req.query;
+    const result = await m_admin.getAccionesXRol(id_rol);
+    console.log('result', result)
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      acciones: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 exports.getUsuario = async (req, res, next) => {
   try {
     const id_usuario = req.query.id_usuario;
@@ -226,6 +241,61 @@ exports.updateUsuario = async (req, res, next) => {
     return res.status(200).send({
       message: MESSAGE_API.UPDATE_SUCCESS,
       usuario: usuario
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.emitirNotaVenta = async (req, res, next) => {
+  try {
+    const { nota_ventas, total } = req.body
+    const result = await m_admin.emitirNotaVenta(JSON.stringify(nota_ventas), total)
+    console.log('result', result);
+    return res.status(200).send({
+      message: MESSAGE_API.UPDATE_SUCCESS,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.buscarNotaVenta = async (req, res, next) => {
+  try {
+    const { nota_venta } = req.query;
+    console.log('nota_venta', nota_venta);
+    const result = await m_admin.buscarNotaVenta(nota_venta)
+    console.log('result', result);
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      nota_venta: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.emitirBoleta = async (req, res, next) => {
+  try {
+    const { nota_venta, medio_pago } = req.body;
+    // return res.status(200).send({})
+    const result = await m_admin.emitirBoleta(nota_venta, medio_pago)
+    // console.log('result', result);
+    return res.status(200).send({
+      message: MESSAGE_API.UPDATE_SUCCESS,
+      boleta: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.getBoletas = async (req, res, next) => {
+  try {
+    const result = await m_admin.getBoletas();
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      boletas: result
     });
   } catch (error) {
     next(error);
