@@ -36,6 +36,7 @@ const c_auth = require('./src/controllers/c_auth');
 app.post('/insert-rol', c_admin.insertRol)
 app.get('/roles', c_admin.getRoles)
 app.get('/acciones', c_admin.getAcciones)
+app.get('/acciones-x-rol', c_admin.getAccionesXRol)
 app.post('/insert-product', c_admin.insertProducto)
 app.post('/update-product', c_admin.updateProducto)
 app.post('/delete-product', c_admin.deleteProducto)
@@ -49,6 +50,11 @@ app.get('/get-usuario', c_admin.getUsuario)
 app.get('/usuarios', c_admin.getUsuarios)
 app.post('/create-usuario', c_admin.createUsuario)
 app.post('/update-usuario', c_admin.updateUsuario)
+app.post('/emitir-notaventa', c_admin.emitirNotaVenta)
+app.get('/buscar-notaventa', c_admin.buscarNotaVenta)
+app.post('/emitir-boleta', c_admin.emitirBoleta)
+app.get('/boletas', c_admin.getBoletas)
+
 
 
 // Middleware para manejo de errores
