@@ -1,12 +1,11 @@
 const m_admin = require('../models/m_admin');
 const { MESSAGE_API } = require('../config/constants');
+const { pass } = require('../strategies/jwt');
 
 exports.insertRol = async (req, res, next) => {
   try {
     const { desc_rol } = req.body;
-    console.log('desc_rol', desc_rol)
     const result = await m_admin.insertRol(desc_rol);
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.INSERT_SUCCESS,
       rol: {
@@ -21,7 +20,6 @@ exports.insertRol = async (req, res, next) => {
 exports.getRoles = async (req, res, next) => {
   try {
     const result = await m_admin.getRoles();
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       roles: result
@@ -34,7 +32,6 @@ exports.getRoles = async (req, res, next) => {
 exports.getAcciones = async (req, res, next) => {
   try {
     const result = await m_admin.getAcciones();
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       acciones: result
@@ -49,7 +46,6 @@ exports.insertProducto = async (req, res, next) => {
   try {
     const { precio, stock, desc_producto } = req.body;
     const result = await m_admin.insertProducto(precio, stock, desc_producto);
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.INSERT_SUCCESS,
       product: {
@@ -65,7 +61,6 @@ exports.updateProducto = async (req, res, next) => {
   try {
     const { id_producto, desc_producto, stock, precio } = req.body;
     const result = await m_admin.updateProducto({ id_producto, desc_producto, stock, precio });
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.INSERT_SUCCESS,
       product: {
@@ -82,7 +77,6 @@ exports.deleteProducto = async (req, res, next) => {
   try {
     const { id_producto } = req.body;
     const result = await m_admin.deleteProducto(id_producto);
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.REMOVE_SUCCESS,
       product: {
@@ -98,7 +92,6 @@ exports.deleteProducto = async (req, res, next) => {
 exports.getProductos = async (req, res, next) => {
   try {
     const result = await m_admin.getProductos();
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       productos: result
@@ -111,7 +104,6 @@ exports.getProductos = async (req, res, next) => {
 exports.getBoletas = async (req, res, next) => {
   try {
     const result = await m_admin.getBoletas();
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       boletas: result
@@ -125,7 +117,6 @@ exports.insertAccion = async (req, res, next) => {
   try {
     const { desc_accion, ruta_accion,resumen } = req.body;
     const result = await m_admin.insertAccion({desc_accion, ruta_accion,resumen});
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.INSERT_SUCCESS,
       product: {
@@ -146,10 +137,7 @@ exports.asignarAccionxRol = async (req, res, next) => {
       result = await m_admin.insertAccionxRol({_id_accion, _id_rol});
     } else {
       const { active } = registro;
-      console.log('active', active);
-      console.log('1')
       if (!active) {
-        console.log('2')
         result = await m_admin.updateAccionxRol({_id_accion, _id_rol});
       } else {
         return res.status(400).send({
@@ -157,7 +145,6 @@ exports.asignarAccionxRol = async (req, res, next) => {
         });
       }
     }
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.INSERT_SUCCESS,
       product: {
@@ -174,7 +161,6 @@ exports.getAccionesXRol = async (req, res, next) => {
   try {
     const { id_rol } = req.query;
     const result = await m_admin.getAccionesXRol(id_rol);
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       acciones: result
@@ -188,7 +174,6 @@ exports.getUsuario = async (req, res, next) => {
   try {
     const id_usuario = req.query.id_usuario;
     const result = await m_admin.getUsuario(id_usuario);
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       usuario: result
@@ -202,7 +187,6 @@ exports.getUsuario = async (req, res, next) => {
 exports.getUsuarios = async (req, res, next) => {
   try {
     const result = await m_admin.getUsuarios();
-    console.log('result', result)
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       usuarios: result
@@ -221,7 +205,6 @@ exports.createUsuario = async (req, res, next) => {
       nombres, email, password,
       _id_rol: default_rol
     });
-    console.log('result', usuario)
     return res.status(200).send({
       message: MESSAGE_API.INSERT_SUCCESS,
       usuario: usuario
@@ -237,7 +220,6 @@ exports.updateUsuario = async (req, res, next) => {
     const usuario = await m_admin.updateUsuario({
       id_usuario, nombres, email, password
     });
-    console.log('result', usuario)
     return res.status(200).send({
       message: MESSAGE_API.UPDATE_SUCCESS,
       usuario: usuario
@@ -250,8 +232,8 @@ exports.updateUsuario = async (req, res, next) => {
 exports.emitirNotaVenta = async (req, res, next) => {
   try {
     const { nota_ventas, total } = req.body
+    console.log('nota_ventas, total', {nota_ventas, total})
     const result = await m_admin.emitirNotaVenta(JSON.stringify(nota_ventas), total)
-    console.log('result', result);
     return res.status(200).send({
       message: MESSAGE_API.UPDATE_SUCCESS,
     });
@@ -278,6 +260,7 @@ exports.buscarNotaVenta = async (req, res, next) => {
 exports.emitirBoleta = async (req, res, next) => {
   try {
     const { nota_venta, medio_pago } = req.body;
+    console.log('nota_venta, medio_pago', {nota_venta, medio_pago})
     // return res.status(200).send({})
     const result = await m_admin.emitirBoleta(nota_venta, medio_pago)
     // console.log('result', result);
@@ -296,6 +279,153 @@ exports.getBoletas = async (req, res, next) => {
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
       boletas: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.detalleBoleta = async (req, res, next) => {
+  try {
+    const { id_boleta } = req.query;
+    const result = await m_admin.detalleBoleta(id_boleta);
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      detalle_boleta: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.updateBoleta = async (req, res, next) => {
+  try {
+    const { id_boleta, estado } = req.body;
+    const result = await m_admin.updateBoleta({id_boleta, estado});
+    return res.status(200).send({
+      message: MESSAGE_API.UPDATE_SUCCESS,
+      updated: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+
+function sendCorreo(id_usuario, email) {
+  return new Promise((resolve) => {
+
+    var nodemailer = require('nodemailer');
+  
+    var transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      service: 'gmail',
+      auth: {
+        user: 'cristiansotomayor1912@gmail.com',
+        pass: process.env.CORREO_PASS
+      }
+    });
+    console.log('transporter', transporter)
+  
+    var mailOptions = {
+      from: 'cristiansotomayor1912@gmail.com',
+      to: email,
+      subject: 'Reestablece contra',
+      text: `
+        apreta el siguiente enlace o pegalo en tu navegador:
+      localhost:4200/auth/restart-password/${id_usuario}
+      `
+    };
+  
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        return resolve({err: true})
+      } else {
+        return resolve({status: 'ok'})
+        console.log('Email sent: ' + info.response);
+      }
+    });
+  })
+}
+
+exports.validarEmail = async (req, res, next) => {
+  try {
+    const {email} = req.query;
+    const result = await m_admin.validarEmail(email);
+    console.log('result', result);
+    if (result.length == 0) {
+      return res.status(400).send({
+        message: 'No existe un usuario con un email como el que enviaste'
+      });
+    }
+
+    console.log('aqui')
+    const id_usuario = result[0].id_usuario;
+    console.log('id_usuario', id_usuario)
+    const send_correo = await sendCorreo(id_usuario, email);
+    console.log('send_correo', send_correo);
+
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      email: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.updatePass = async (req, res, next) => {
+  try {
+    const {password, id_usuario} = req.body;
+    const result = await m_admin.updatePass(password, id_usuario);
+    return res.status(200).send({
+      message: MESSAGE_API.UPDATE_SUCCESS,
+      pass: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.getBoletas = async (req, res, next) => {
+  try {
+    const result = await m_admin.getBoletas();
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      boletas: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.searchUsuario = async (req, res, next) => {
+  try {
+    const {id_usuario} = req.query;
+    const result = await m_admin.searchUsuario(id_usuario);
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      usuario: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.updateRol = async (req, res, next) => {
+  try {
+    const {id_usuario, rol} = req.body;
+    const result = await m_admin.updateRol(id_usuario, rol);
+    return res.status(200).send({
+      message: MESSAGE_API.UPDATE_SUCCESS,
+      usuario: result
     });
   } catch (error) {
     next(error);

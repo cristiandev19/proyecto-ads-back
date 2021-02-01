@@ -67,21 +67,21 @@ exports.getProductos = () => {
   });
 }
 
-exports.getBoletas = () => {
-  return new Promise((resolve, reject) => {
-    pgInstance.any(
-      'SELECT * FROM boleta;',
-      []
-    )
-      .then(data => {
-        console.log('data', data)
-        return resolve(data);
-      })
-      .catch(error => {
-        return reject(error);
-      })
-  });
-}
+// exports.getBoletas = () => {
+//   return new Promise((resolve, reject) => {
+//     pgInstance.any(
+//       'SELECT * FROM boleta;',
+//       []
+//     )
+//       .then(data => {
+//         console.log('data', data)
+//         return resolve(data);
+//       })
+//       .catch(error => {
+//         return reject(error);
+//       })
+//   });
+// }
 
 exports.insertAccion = ({desc_accion, ruta_accion,resumen}) => {
   return new Promise((resolve, reject) => {
@@ -375,12 +375,134 @@ exports.emitirBoleta = (nota_venta, medio_pago) => {
 exports.getBoletas = () => {
   return new Promise((resolve, reject) => {
     pgInstance.any(
-      `SELECT to_char(fecha, 'DD-MM-YYYY') as fecha_f,*
-         FROM boleta;`,
+      `SELECT to_char(b.fecha, 'DD-MM-YYYY') as fecha_f,
+      to_char(b.fecha, 'HH12:MI:SS') as hora,
+      to_char(b.fecha, 'MM') as mes,*
+         FROM boleta b
+         LEFT JOIN estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
+         LEFT JOIN nota_venta nv on (nv.id_nota_venta = b._id_nota_venta)
+        ORDER BY b.fecha asc;`,
       []
     )
       .then(data => {
         console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.detalleBoleta = (id_boleta) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `select *
+      from boleta b
+           left join nota_venta nv on (nv.id_nota_venta = b._id_nota_venta)
+           left join producto_x_nota_venta pxv on (pxv._id_nota_venta = nv.id_nota_venta)
+           left join producto p on (p.id_producto = pxv._id_producto)
+     where b.id_boleta = $1::INTEGER
+    `,
+      [id_boleta]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.updateBoleta = ({id_boleta, estado}) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.one(
+      `UPDATE boleta
+          SET estado = $2
+        WHERE id_boleta = $1
+      RETURNING *;`,
+      [id_boleta, estado]
+    )
+      .then(data => {
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
+exports.validarEmail = (email) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `select *
+      from usuario
+     where email = $1`,
+      [email]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
+
+exports.updatePass = (pass, id_usuario) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.one(
+      `UPDATE usuario
+          SET password = $1
+        WHERE id_usuario = $2
+      RETURNING *;`,
+      [pass, id_usuario]
+    )
+      .then(data => {
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
+exports.searchUsuario = (id_usuario) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `select *
+      from usuario u
+           left join rol r on (r.id_rol = u._id_rol)
+     where id_usuario = $1`,
+      [id_usuario]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.updateRol = (id_usuario, id_rol) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.one(
+      `UPDATE usuario
+          SET _id_rol = $2
+        WHERE id_usuario = $1
+      RETURNING *;`,
+      [id_usuario, id_rol]
+    )
+      .then(data => {
         return resolve(data);
       })
       .catch(error => {
