@@ -31,6 +31,7 @@ exports.getRoles = async (req, res, next) => {
 
 exports.getAcciones = async (req, res, next) => {
   try {
+    console.log('1');
     const result = await m_admin.getAcciones();
     return res.status(200).send({
       message: MESSAGE_API.SELECT_SUCCESS,
