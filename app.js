@@ -21,7 +21,7 @@ app
   .use(cors({ 'origin': '*' }))
   .use(bodyParser.urlencoded({ limit: '5mb', extended: true }))
   .use(bodyParser.json({ limit: '5mb' }));
-
+  
 // Importamos modulos
 const r_example = require('./src/modules/example/r_example');
 const r_auth = require('./src/modules/auth/r_auth');

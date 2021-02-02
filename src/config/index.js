@@ -1,4 +1,6 @@
-require('dotenv').config();
+require('dotenv').config({ path: '.env.example' });
+// dotenv.config({ path: '.env.example' });
+
 
 const config = {
   dev: process.env.NODE_ENV !== 'production',
