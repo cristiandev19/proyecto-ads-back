@@ -425,7 +425,8 @@ exports.buscarBoleta = (boleta) => {
       `select TO_CHAR(fecha, 'DD-MM-YYYY') as fecha_v,*
       from public.boleta b
            left join public.estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
-     where nro_correlativo ~* $1;`,
+     where nro_correlativo ~* $1
+       and estado = '1';`,
       [boleta]
     )
       .then(data => {
@@ -464,6 +465,30 @@ exports.getBoletas = () => {
          LEFT JOIN estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
          LEFT JOIN nota_venta nv on (nv.id_nota_venta = b._id_nota_venta)
         WHERE (b.fecha - interval '5 hour')::DATE = (now() - interval '10 hour')::DATE
+        ORDER BY b.fecha asc;`,
+      []
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.getBoletas1 = () => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT to_char(b.fecha - interval '5 hour', 'DD-MM-YYYY') as fecha_f,
+              to_char(b.fecha - interval '5 hour', 'DD-MM-YYYY') as fecha_v,
+              to_char(b.fecha - interval '5 hour', 'HH12:MI:SS') as hora,
+              to_char(b.fecha - interval '5 hour', 'MM') as mes,*
+         FROM boleta b
+         LEFT JOIN estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
+         LEFT JOIN nota_venta nv on (nv.id_nota_venta = b._id_nota_venta)
+        WHERE b.estado = '1'
         ORDER BY b.fecha asc;`,
       []
     )

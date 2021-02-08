@@ -114,6 +114,19 @@ exports.getBoletas = async (req, res, next) => {
   }
 }
 
+exports.getBoletas1 = async (req, res, next) => {
+  try {
+    console.log('wtf')
+    const result = await m_admin.getBoletas1();
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      boletas: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 exports.getEstadosBoleta = async (req, res, next) => {
   try {
     const result = await m_admin.getEstadosBoleta();
@@ -523,7 +536,7 @@ exports.insertReclamo = async (req, res, next) => {
 
     const result2 = await m_admin.updateBoleta({
       id_boleta: _id_boleta,
-      estado: '2'
+      estado: '3'
     });
 
     return res.status(200).send({
