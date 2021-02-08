@@ -42,6 +42,7 @@ app.post('/update-product', c_admin.updateProducto)
 app.post('/delete-product', c_admin.deleteProducto)
 app.get('/productos', c_admin.getProductos)
 app.get('/boletas', c_admin.getBoletas)
+app.get('/boletas-filtro', c_admin.getBoletasFiltro)
 app.get('/login', c_auth.login)
 app.post('/register', c_auth.registerUser)
 app.post('/insert-accion', c_admin.insertAccion)
@@ -52,6 +53,7 @@ app.post('/create-usuario', c_admin.createUsuario)
 app.post('/update-usuario', c_admin.updateUsuario)
 app.post('/emitir-notaventa', c_admin.emitirNotaVenta)
 app.get('/buscar-notaventa', c_admin.buscarNotaVenta)
+app.get('/buscar-boleta', c_admin.buscarBoleta)
 app.post('/emitir-boleta', c_admin.emitirBoleta)
 app.get('/boletas', c_admin.getBoletas)
 app.get('/detalle-boleta', c_admin.detalleBoleta)
@@ -61,6 +63,12 @@ app.get('/validar-email', c_admin.validarEmail)
 app.post('/update-pass', c_admin.updatePass)
 app.get('/search-usuario', c_admin.searchUsuario)
 app.post('/update-rol', c_admin.updateRol)
+app.get('/search-producto', c_admin.searchProduct)
+app.get('/boletas-filtro', c_admin.boletasFiltro)
+app.get('/estados-boleta', c_admin.getEstadosBoleta)
+app.post('/insert-reclamo', c_admin.insertReclamo)
+
+
 
 // Middleware para manejo de errores
 app
