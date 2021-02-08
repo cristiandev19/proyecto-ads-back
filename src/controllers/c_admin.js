@@ -387,14 +387,14 @@ function sendCorreo(id_usuario, email) {
       requireTLS: true,
       service: 'gmail',
       auth: {
-        user: 'cristiansotomayor1912@gmail.com',
-        pass: process.env.CORREO_PASS
+        user: 'zohetestapp@gmail.com',
+        pass: 'los72524292'
       }
     });
     console.log('transporter', transporter)
   
     var mailOptions = {
-      from: 'cristiansotomayor1912@gmail.com',
+      from: 'zohetestapp@gmail.com',
       to: email,
       subject: 'Reestablece contra',
       text: `
