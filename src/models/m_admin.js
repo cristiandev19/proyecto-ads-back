@@ -284,6 +284,44 @@ exports.insertProducto = (precio, stock, desc_producto) => {
   });
 }
 
+exports.insertReclamo = (_id_boleta, desc_reclamo) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.one(
+      `INSERT INTO public.reclamo(_id_boleta, desc_reclamo)
+            VALUES ($1, $2)
+         RETURNING *;`,
+      [_id_boleta, desc_reclamo]
+    )
+      .then(data => {
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+exports.validarReclamo = (_id_boleta) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT *
+         FROM public.reclamo
+        WHERE _id_boleta = $1;`,
+      [_id_boleta]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
+
+
 exports.updateProducto = ({id_producto, desc_producto, stock, precio}) => {
   return new Promise((resolve, reject) => {
     pgInstance.one(
@@ -357,6 +395,25 @@ exports.buscarNotaVenta = (nota_venta) => {
   });
 }
 
+exports.buscarBoleta = (boleta) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `select TO_CHAR(fecha, 'DD-MM-YYYY') as fecha_v,*
+      from public.boleta b
+           left join public.estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
+     where nro_correlativo ~* $1;`,
+      [boleta]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
 exports.emitirBoleta = (nota_venta, medio_pago) => {
   return new Promise((resolve, reject) => {
     pgInstance.one(
@@ -375,12 +432,14 @@ exports.emitirBoleta = (nota_venta, medio_pago) => {
 exports.getBoletas = () => {
   return new Promise((resolve, reject) => {
     pgInstance.any(
-      `SELECT to_char(b.fecha, 'DD-MM-YYYY') as fecha_f,
-      to_char(b.fecha, 'HH12:MI:SS') as hora,
-      to_char(b.fecha, 'MM') as mes,*
+      `SELECT to_char(b.fecha - interval '5 hour', 'DD-MM-YYYY') as fecha_f,
+              to_char(b.fecha - interval '5 hour', 'DD-MM-YYYY') as fecha_v,
+              to_char(b.fecha - interval '5 hour', 'HH12:MI:SS') as hora,
+              to_char(b.fecha - interval '5 hour', 'MM') as mes,*
          FROM boleta b
          LEFT JOIN estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
          LEFT JOIN nota_venta nv on (nv.id_nota_venta = b._id_nota_venta)
+        WHERE (b.fecha - interval '5 hour')::DATE = (now() - interval '10 hour')::DATE
         ORDER BY b.fecha asc;`,
       []
     )
@@ -393,6 +452,49 @@ exports.getBoletas = () => {
       })
   });
 }
+
+
+exports.getEstadosBoleta = () => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT *
+        FROM estado_boleta eb;`,
+      []
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
+exports.getBoletasFiltro = (fecha) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT to_char(b.fecha - interval '5 hour', 'DD-MM-YYYY') as fecha_f,
+              to_char(b.fecha - interval '5 hour', 'HH12:MI:SS') as hora,
+              to_char(b.fecha - interval '5 hour', 'MM') as mes,*
+         FROM boleta b
+         LEFT JOIN estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
+         LEFT JOIN nota_venta nv on (nv.id_nota_venta = b._id_nota_venta)
+        WHERE (b.fecha - interval '5 hour')::DATE = ($1)::DATE
+        ORDER BY b.fecha asc;`,
+      [fecha]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
 
 exports.detalleBoleta = (id_boleta) => {
   return new Promise((resolve, reject) => {
@@ -503,6 +605,47 @@ exports.updateRol = (id_usuario, id_rol) => {
       [id_usuario, id_rol]
     )
       .then(data => {
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
+exports.searchProduct = (desc_producto) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      'SELECT * FROM producto WHERE desc_producto ~* $1 AND estado = TRUE AND stock > 0;',
+      [desc_producto]
+    )
+      .then(data => {
+        console.log('data', data)
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
+exports.boletasFiltro = (fecha_ini, fecha_fin) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.any(
+      `SELECT to_char(b.fecha - interval '5 hour', 'DD-MM-YYYY') as fecha_f,
+              to_char(b.fecha - interval '5 hour', 'HH12:MI:SS') as hora,
+              to_char(b.fecha - interval '5 hour', 'MM') as mes,*
+         FROM boleta b
+         LEFT JOIN estado_boleta eb on (eb.id_estado = b.estado::INTEGER)
+         LEFT JOIN nota_venta nv on (nv.id_nota_venta = b._id_nota_venta)
+        WHERE (b.fecha - interval '5 hour')::DATE BETWEEN $1::DATE AND $2::DATE
+        ORDER BY b.fecha asc;`,
+      [fecha_ini, fecha_fin]
+    )
+      .then(data => {
+        console.log('data', data)
         return resolve(data);
       })
       .catch(error => {
