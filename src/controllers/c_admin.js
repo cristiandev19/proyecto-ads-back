@@ -114,6 +114,37 @@ exports.getBoletas = async (req, res, next) => {
   }
 }
 
+exports.getEstadosBoleta = async (req, res, next) => {
+  try {
+    const result = await m_admin.getEstadosBoleta();
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      estados: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.getBoletasFiltro = async (req, res, next) => {
+  try {
+    const { fecha } = req.query;
+    if (!fecha) {
+      return res.status(200).send({
+        message: MESSAGE_API.SELECT_SUCCESS,
+        boletas: []
+      });
+    }
+    const result = await m_admin.getBoletasFiltro(fecha);
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      boletas: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 exports.insertAccion = async (req, res, next) => {
   try {
     const { desc_accion, ruta_accion,resumen } = req.body;
@@ -137,8 +168,9 @@ exports.asignarAccionxRol = async (req, res, next) => {
     if(validar.length == 0) {
       result = await m_admin.insertAccionxRol({_id_accion, _id_rol});
     } else {
-      const { active } = registro;
-      if (!active) {
+      console.log('registro', registro);
+      // const { active } = registro;
+      if (!registro || !registro.active) {
         result = await m_admin.updateAccionxRol({_id_accion, _id_rol});
       } else {
         return res.status(400).send({
@@ -200,7 +232,7 @@ exports.getUsuarios = async (req, res, next) => {
 
 exports.createUsuario = async (req, res, next) => {
   try {
-    const default_rol = 8;
+    const default_rol = 12;
     const { nombres, email, password } = req.body;
     const usuario = await m_admin.createUsuario({
       nombres, email, password,
@@ -258,6 +290,21 @@ exports.buscarNotaVenta = async (req, res, next) => {
   }
 }
 
+exports.buscarBoleta = async (req, res, next) => {
+  try {
+    const { boleta } = req.query;
+    // console.log('nota_venta', nota_venta);
+    const result = await m_admin.buscarBoleta(boleta)
+    console.log('result', result);
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      boletas: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 exports.emitirBoleta = async (req, res, next) => {
   try {
     const { nota_venta, medio_pago } = req.body;
@@ -274,17 +321,17 @@ exports.emitirBoleta = async (req, res, next) => {
   }
 }
 
-exports.getBoletas = async (req, res, next) => {
-  try {
-    const result = await m_admin.getBoletas();
-    return res.status(200).send({
-      message: MESSAGE_API.SELECT_SUCCESS,
-      boletas: result
-    });
-  } catch (error) {
-    next(error);
-  }
-}
+// exports.getBoletas = async (req, res, next) => {
+//   try {
+//     const result = await m_admin.getBoletas();
+//     return res.status(200).send({
+//       message: MESSAGE_API.SELECT_SUCCESS,
+//       boletas: result
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 exports.detalleBoleta = async (req, res, next) => {
   try {
@@ -395,17 +442,17 @@ exports.updatePass = async (req, res, next) => {
 }
 
 
-exports.getBoletas = async (req, res, next) => {
-  try {
-    const result = await m_admin.getBoletas();
-    return res.status(200).send({
-      message: MESSAGE_API.SELECT_SUCCESS,
-      boletas: result
-    });
-  } catch (error) {
-    next(error);
-  }
-}
+// exports.getBoletas = async (req, res, next) => {
+//   try {
+//     const result = await m_admin.getBoletas();
+//     return res.status(200).send({
+//       message: MESSAGE_API.SELECT_SUCCESS,
+//       boletas: result
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 exports.searchUsuario = async (req, res, next) => {
   try {
@@ -427,6 +474,61 @@ exports.updateRol = async (req, res, next) => {
     return res.status(200).send({
       message: MESSAGE_API.UPDATE_SUCCESS,
       usuario: result
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.searchProduct = async (req, res, next) => {
+  try {
+    const { desc_producto } = req.query;
+    const result = await m_admin.searchProduct(desc_producto);
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      productos: result || []
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+
+exports.boletasFiltro = async (req, res, next) => {
+  try {
+    const { fecha_ini, fecha_fin } = req.query;
+    const result = await m_admin.boletasFiltro(fecha_ini, fecha_fin);
+    return res.status(200).send({
+      message: MESSAGE_API.SELECT_SUCCESS,
+      boletas: result || []
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+exports.insertReclamo = async (req, res, next) => {
+  try {
+    const { _id_boleta, desc_reclamo } = req.body;
+    const validar = await m_admin.validarReclamo(_id_boleta);
+    if (validar.length > 0) {
+      return res.status(400).send({
+        message: 'Ya existe un reclamo para esta boleta'
+      });
+    }
+    const result = await m_admin.insertReclamo(_id_boleta, desc_reclamo);
+
+    const result2 = await m_admin.updateBoleta({
+      id_boleta: _id_boleta,
+      estado: '2'
+    });
+
+    return res.status(200).send({
+      message: MESSAGE_API.INSERT_SUCCESS,
+      reclamo: result
     });
   } catch (error) {
     next(error);
