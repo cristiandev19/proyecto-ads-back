@@ -139,6 +139,7 @@ exports.getUsuarios = () => {
       `SELECT *
          FROM usuario u
               LEFT JOIN rol r ON (u._id_rol = r.id_rol)
+        WHERE estado = TRUE
          ;`,
       []
     )
@@ -150,6 +151,8 @@ exports.getUsuarios = () => {
       })
   });
 }
+
+
 
 exports.insertAccionxRol = ({_id_accion, _id_rol}) => {
   return new Promise((resolve, reject) => {
@@ -359,6 +362,27 @@ exports.deleteProducto = (id_producto) => {
       })
   });
 }
+
+
+exports.deleteUsuario = (id_usuario) => {
+  return new Promise((resolve, reject) => {
+    pgInstance.one(
+      `UPDATE public.usuario
+          SET estado = FALSE
+        WHERE id_usuario = $1
+      RETURNING *;`,
+      [id_usuario]
+    )
+      .then(data => {
+        return resolve(data);
+      })
+      .catch(error => {
+        return reject(error);
+      })
+  });
+}
+
+
 
 exports.emitirNotaVenta = (nota_ventas, total) => {
   return new Promise((resolve, reject) => {
