@@ -534,3 +534,20 @@ exports.insertReclamo = async (req, res, next) => {
     next(error);
   }
 }
+
+
+exports.deleteUsuario = async (req, res, next) => {
+  try {
+    const { id_usuario } = req.body;
+    const result = await m_admin.deleteUsuario(id_usuario);
+    return res.status(200).send({
+      message: MESSAGE_API.REMOVE_SUCCESS,
+      usuario: {
+        ...result
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
