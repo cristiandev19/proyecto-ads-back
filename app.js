@@ -67,6 +67,7 @@ app.get('/search-producto', c_admin.searchProduct)
 app.get('/boletas-filtro', c_admin.boletasFiltro)
 app.get('/estados-boleta', c_admin.getEstadosBoleta)
 app.post('/insert-reclamo', c_admin.insertReclamo)
+app.post('/delete-usuario', c_admin.deleteUsuario)
 
 
 
