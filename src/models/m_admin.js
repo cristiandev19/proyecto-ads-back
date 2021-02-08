@@ -666,7 +666,11 @@ exports.updateRol = (id_usuario, id_rol) => {
 exports.searchProduct = (desc_producto) => {
   return new Promise((resolve, reject) => {
     pgInstance.any(
-      'SELECT * FROM producto WHERE desc_producto ~* $1 AND estado = TRUE AND stock > 0;',
+      `SELECT *
+        FROM producto
+        WHERE desc_producto ~* $1
+        AND estado = TRUE
+        AND stock > 0;`,
       [desc_producto]
     )
       .then(data => {

@@ -282,6 +282,7 @@ exports.emitirNotaVenta = async (req, res, next) => {
     const result = await m_admin.emitirNotaVenta(JSON.stringify(nota_ventas), total)
     return res.status(200).send({
       message: MESSAGE_API.UPDATE_SUCCESS,
+      result: result
     });
   } catch (error) {
     next(error);
